@@ -1,0 +1,10 @@
+@mixin icon{
+  cursor: pointer;
+  padding: 10px;
+  transition: 0.2s;
+  &:hover{
+    background-color: #d8b401;
+    border-radius: 100%;
+    transition: 0.2s;
+  }
+}
