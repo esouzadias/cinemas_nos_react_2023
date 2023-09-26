@@ -1,9 +1,14 @@
 import React, { useState, useEffect } from 'react';
 import './App.scss';
+
+//*Components
 import Header from "./Layout/Header/Header";
 import MainIntro from './Layout/MainIntro/MainIntro';
 import MovieList from './Layout/MovieList/MovieList';
+import Cinemas from './Layout/Cinemas/Cinemas';
 import { fetchNowPlayingMoviesData, fetchCommingSoonMoviesData, fetchMoviesGenres, fetchMovieTrailersData } from './Services/Utils/ApiRequests';
+
+//*Assets
 import cinemaStatic from './Assets/Images/cinema_icon_static.png';
 import cinemaHover from './Assets/Images/output-onlinegiftools.gif';
 
@@ -48,7 +53,7 @@ function App() {
         return genre ? genre.name : "";
       }).join(", ");
       setCurrentMovieGenre(currentMovieGenreNames);
-    } else if(upcomingMovieData && upcomingMovieData[currentMovieIndex]) {
+    } else if (upcomingMovieData && upcomingMovieData[currentMovieIndex]) {
       const currentMovieGenreIds = upcomingMovieData[currentMovieIndex].genre_ids || [];
       const currentMovieGenreNames = currentMovieGenreIds.map((genreId) => {
         const genre = movieGenres?.find((genre) => genre.id === genreId);
@@ -75,47 +80,49 @@ function App() {
   return (
     <div className="App">
       <Header />
-        {movieData && currentMovieGenre && movieTimes.length > 0 && (
-      <>
-        <MainIntro 
-          mainMovie={movieData ? movieData : null} 
-          currentMovieIndex={currentMovieIndex}
-          currentMovieGenre={currentMovieGenre}
-          movieTime={movieTimes[currentMovieIndex]}
+      {movieData && currentMovieGenre && movieTimes.length > 0 && (
+        <>
+          <MainIntro
+            mainMovie={movieData ? movieData : null}
+            currentMovieIndex={currentMovieIndex}
+            currentMovieGenre={currentMovieGenre}
+            movieTime={movieTimes[currentMovieIndex]}
           />
-        <div className='movies-category'>
-          <div className='movies-category-content'>
-            <span>
-              <h2 onClick={handleMovieTypeClick} className={nowPlaying ? 'header-links-active' : 'header-links'} id='filmesEmCartaz'><hr/> Filmes em cartaz</h2>
-              <h2 onClick={handleMovieTypeClick} className={nowPlaying ? 'header-links' : 'header-links-active'} id='brevemente'><hr/> Brevemente</h2>
-            </span>
-            <div className='check-all-movies'>
-              <img src={hover ? cinemaHover : cinemaStatic} alt="Cinema" />
-              <a href='www.google.pt'
-                onMouseEnter={() => setHover(true)}
-                onMouseLeave={() => setHover(false)}
-              >Ver todos os filmes</a>
+
+          <div className='movies-category'>
+            <div className='movies-category-content'>
+              <span>
+                <h2 onClick={handleMovieTypeClick} className={nowPlaying ? 'header-links-active' : 'header-links'} id='filmesEmCartaz'><hr /> Filmes em cartaz</h2>
+                <h2 onClick={handleMovieTypeClick} className={nowPlaying ? 'header-links' : 'header-links-active'} id='brevemente'><hr /> Brevemente</h2>
+              </span>
+              <div className='check-all-movies'>
+                <img src={hover ? cinemaHover : cinemaStatic} alt="Cinema" />
+                <a href='www.google.pt'
+                  onMouseEnter={() => setHover(true)}
+                  onMouseLeave={() => setHover(false)}
+                >Ver todos os filmes</a>
+              </div>
             </div>
           </div>
-        </div>
-        {nowPlaying ? (
-          <MovieList 
-            movieGenres={movieGenres} 
-            currentMovieGenre={currentMovieGenre} 
-            currentMovieIndex={currentMovieIndex} 
-            movieData={movieData} 
-            movieTimes={movieTimes}
+          {nowPlaying ? (
+            <MovieList
+              movieGenres={movieGenres}
+              currentMovieGenre={currentMovieGenre}
+              currentMovieIndex={currentMovieIndex}
+              movieData={movieData}
+              movieTimes={movieTimes}
             />
-        ) : (
-          <MovieList 
-            movieGenres={movieGenres} 
-            currentMovieGenre={currentMovieGenre} 
-            currentMovieIndex={currentMovieIndex} 
-            movieData={upcomingMovieData} 
-            movieTimes={movieTimes}/>
-        )}
-      </>
+          ) : (
+            <MovieList
+              movieGenres={movieGenres}
+              currentMovieGenre={currentMovieGenre}
+              currentMovieIndex={currentMovieIndex}
+              movieData={upcomingMovieData}
+              movieTimes={movieTimes} />
+          )}
+        </>
       )}
+      <Cinemas />
     </div>
   );
 }
