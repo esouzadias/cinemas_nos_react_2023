@@ -1,0 +1,27 @@
+@use "./variables.scss" as var;
+
+@mixin icon{
+  cursor: pointer;
+  padding: 10px;
+  transition: 0.2s;
+  &:hover{
+    background-color: #d8b401;
+    border-radius: 100%;
+    transition: 0.2s;
+  }
+}
+
+@mixin button{
+  background-color: white;
+  border: 2px solid transparent;
+  border-radius: 20px;
+  padding: 10px 20px;
+  transition-duration: 0.2s;
+  
+  &:hover{
+    transition-duration: 0.2s;
+    cursor: pointer;
+    transform: scale(1.1);
+    background-color: var.$highlightColor;
+  }
+}
