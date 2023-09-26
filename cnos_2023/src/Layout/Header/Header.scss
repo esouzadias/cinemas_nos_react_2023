@@ -1,0 +1,57 @@
+@use "../../Assets/Styles/mixins.scss" as mix;
+@use "../../Assets/Styles/variables.scss" as var;
+
+.header-main {
+  width: 100%;
+  position: fixed;
+  z-index: 1;
+	.header-content {
+		display: flex;
+		flex-wrap: wrap;
+		align-items: center;
+		justify-content: space-around;
+		min-height: 55px;
+		background-color: var.$primaryColor;
+		border-bottom: 1px solid #fcd200;
+		width: 100%;
+		span {
+			display: flex;
+			gap: 10px;
+			width: 30%;
+			h2 {
+				font-weight: 100;
+			}
+
+			img {
+				width: 70px;
+			}
+		}
+	}
+	#search {
+		align-items: center;
+		width: 40%;
+		justify-content: space-between;
+		background-color: var.$darkPrimaryColor;
+		border-radius: 8px;
+		border: none;
+		padding: 0 10px;
+		.search-input {
+			width: 100%;
+			padding: 16px;
+			font-size: 16px;
+			background: none;
+			border: none;
+			&::placeholder {
+				color: black;
+			}
+			&:focus {
+				outline: none;
+				border: none;
+				text-decoration: none;
+			}
+		}
+		.icon {
+			@include mix.icon;
+		}
+	}
+}
