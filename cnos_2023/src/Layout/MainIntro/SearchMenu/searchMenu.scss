@@ -1,0 +1,26 @@
+@use "../../../Assets/Styles/mixins.scss" as mix;
+@use "../../../Assets/Styles/variables.scss" as var;
+
+.menu-bar{
+  background-color: rgba($color: #000000, $alpha: 0.5);
+  padding: 10px 40px;
+  width: 100%;
+
+  ul{
+    list-style: none;
+    display: flex;
+    gap: 50px;
+    margin: 0;
+
+    li{
+      color: white; 
+      font-weight: bold;  
+      transition-duration: 0.2s;
+      &:hover{
+      transition-duration: 0.2s;
+        cursor: pointer;
+        color: var.$primaryColor;
+      }
+    }
+  }
+}
