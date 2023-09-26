@@ -1,2 +1,55 @@
 @use "../../Assets/Styles/mixins.scss" as mix;
 @use "../../Assets/Styles/variables.scss" as var;
+
+#cinemas-main{
+  width: 100%;
+  color: white;
+  font-size: 18px;
+  margin: 80px 0;
+  #cinemas-banner-content{
+    width: 100%;
+    background: url("../../Assets/Images/banner_cinemas.png");
+    background-size: cover;
+  }
+  #cinemas-banner{
+    width: 50%;
+    padding: 0 80px;
+    display: flex;
+    flex-direction: column;
+    align-items: baseline;
+
+    .title-big{
+      @include mix.titleBig;
+    }
+  }
+  #cinemas-list-main{
+    padding: 0 80px;
+    &:focus {
+      outline: none;
+    }
+
+    .title-medium{
+      @include mix.titleMedium;
+    }
+
+    .cinemas-list-selection{
+      display: flex;
+      justify-content: space-between;
+      border: none;
+      background-color: #2a2a33;
+      color: white;
+      padding: 20px;
+      font-size: 18px;
+      transition-duration: 0.2s;
+      &:hover{
+      transition-duration: 0.2s;
+        cursor: pointer;
+        color: var.$highlightColor;
+      }
+
+      &:active {
+        color: var.$highlightColor;
+      }
+    }
+  }
+}

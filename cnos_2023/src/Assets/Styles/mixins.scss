@@ -25,3 +25,13 @@
     background-color: var.$highlightColor;
   }
 }
+
+@mixin titleBig{
+  font-weight: bold;
+  font-size: 48px;
+}
+
+@mixin titleMedium{
+  font-weight: normal;
+  font-size: 32px;
+}
