@@ -1,0 +1,43 @@
+#gift-card {
+  color: white;
+  width: 380px;
+  height: 380px;
+  display: flex;
+  justify-content: center;
+  align-items: end;
+
+
+  #gift-bg{
+    clip-path: polygon(0 0, 100% 20%, 100% 100%, 0% 100%);
+    background-color: black;
+    padding: 0 40px;
+    height: 200px;
+    display: flex;
+    flex-direction: column;
+    justify-content: center;
+    transition-duration: 0.2s;
+    h3{
+      font-size: 20px;
+      margin: 0;
+    }
+
+    p{
+      font-size: 18px;
+      margin: 10px 0;
+    }
+
+  }
+  &:hover{
+    cursor: pointer;
+    transition-duration: 0.2s;
+    #gift-bg{
+      background-color: white;
+      h3{
+        color: black;
+      }
+      p{
+        color: black;
+      }
+    }
+  }
+}

@@ -80,4 +80,115 @@ body {
 			}
 		}
 	}
+
+	#gift-card-list {
+		display: flex;
+		flex-direction: row;
+		justify-content: center;
+		flex-wrap: wrap;
+		gap: 20px;
+		padding: 0 90px;
+		max-width: 85%;
+	}
+}
+
+@media (min-width: 168px) and (max-width: 550px) {
+	.header-main{
+		#search{
+			width: 30% !important;
+			background-color: transparent !important;
+			input{
+				display: none !important;
+			}
+		}
+	}
+
+	.header-content{
+		flex-wrap: nowrap !important;
+		padding: 0 20px;
+	}
+
+	.menu-bar{
+		padding: 10px 0 !important;
+		width: 90%;
+
+		ul{
+			display: flex !important;
+			align-items: center !important;
+			padding: 0 20px;
+			gap: 20px !important;
+			text-align: center;
+		}
+	}
+
+	#main-intro{
+		padding-top: 130px !important;
+	}
+
+	#main-intro-content{
+		flex-direction: column;
+		padding-top: 0;
+
+		#video-player{
+			width: 100% !important;
+			mask-image: linear-gradient(to bottom, rgb(0, 0, 0) 60%, transparent 100%) !important;
+		}
+		.movie-info{
+			width: 100% !important;
+			.movie-info-container{
+				padding: 20px;
+			}
+		}
+	}
+
+  #playing-movies{
+		padding: 0 20px !important;
+	}
+
+	.movies-category {
+		padding: 0 !important;
+	}
+  .movies-category-content {
+		flex-direction: column !important;
+		margin: 20px 0;
+		span{
+			justify-content: center;
+			h2{
+				font-size: 18px;
+			}
+		}
+		.check-all-movies{
+			justify-content: center !important;
+		}
+	}
+
+	#cinemas-banner{
+		width: 100% !important;
+		padding: 0 20px !important;
+	}
+	#cinemas-list-main{
+		padding: 0 20px !important;
+	}
+	#banner{
+		height: max-content !important;
+		margin: 80px 0 !important;
+		#banner-content{
+			padding: 0 20px !important;
+
+			h2{
+				font-size: 30px !important;
+			}
+		}
+	}
+
+	#gift-card-list{
+		padding: 0 20px !important;
+
+		#gift-card{
+			height: 380px;
+			#gift-bg{
+				height: 280px !important;
+			}
+		}
+	}
 }

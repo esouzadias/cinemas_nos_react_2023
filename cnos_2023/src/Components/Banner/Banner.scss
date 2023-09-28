@@ -1,0 +1,40 @@
+@use "../../Assets/Styles/mixins.scss" as mix;
+@use "../../Assets/Styles/variables.scss" as var;
+
+#banner{
+  background-color: red;
+  color: white;
+  height: 500px;
+  width: 100%;
+  display: flex;
+  margin-bottom: 50px;
+
+  #banner-content {
+    width: 100%;
+    display: flex;
+    flex-direction: column;
+    justify-content: center;
+    padding: 0 90px;
+
+    h2 {
+      font-size: 40px;
+      margin: 0;
+    }
+
+    p{
+      font-size: 18px;
+    }
+
+    button{
+      @include mix.button;
+      width: 20%;
+    }
+  }
+}
+
+@media (min-width: 168px) and (max-width: 550px) {
+  #banner-content button {
+    width: 100% !important;
+  }
+}
+
