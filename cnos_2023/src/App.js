@@ -1,11 +1,14 @@
 import React, { useState, useEffect } from 'react';
 import './App.scss';
 
-//*Components
+//*Layouts
 import Header from "./Layout/Header/Header";
 import MainIntro from './Layout/MainIntro/MainIntro';
 import MovieList from './Layout/MovieList/MovieList';
 import Cinemas from './Layout/Cinemas/Cinemas';
+import Footer from './Layout/Footer/Footer';
+
+//*Components
 import Banner from './Components/Banner/Banner';
 import GiftCard from './Components/GiftCard/GiftCard';
 import Banner2Div from './Components/Banner2Div/Banner2Div';
@@ -163,6 +166,7 @@ function App() {
       </div>
       <Banner2Div title="Uma sala só para ti" paragraph="Agora podes ter uma sessão de cinema exclusiva para ti e para os teus convidados em qualquer sala dos Cinemas NOS." image={cinemasSalas}/>
       <NumberList numberListInfo={numberListInfo}/>
+      <Footer />
     </div>
   );
 }
