@@ -8,6 +8,8 @@ import MovieList from './Layout/MovieList/MovieList';
 import Cinemas from './Layout/Cinemas/Cinemas';
 import Banner from './Components/Banner/Banner';
 import GiftCard from './Components/GiftCard/GiftCard';
+import Banner2Div from './Components/Banner2Div/Banner2Div';
+import NumberList from './Components/NumberList/NumberList';
 import { fetchNowPlayingMoviesData, fetchCommingSoonMoviesData, fetchMoviesGenres, fetchMovieTrailersData } from './Services/Utils/ApiRequests';
 
 //*Assets
@@ -22,6 +24,8 @@ import gc_aluguerSalas from './Assets/Images/Aluguer_de_salas_CinemasNos.png';
 import gc_festasAniv from './Assets/Images/cinemasnos_festasaniversario.png';
 import gc_operasBailados from './Assets/Images/operas-a-bailados.jpg';
 import gc_banner_gaming from './Assets/Images/banner_gaming.jpg';
+
+import cinemasSalas from './Assets/Images/cinemas_nos_sala_de_cinema.jpeg';
 
 function App() {
   /* const [isMobile, setIsMobile] = useState(false); */
@@ -62,6 +66,13 @@ function App() {
     { giftImg: gc_operasBailados, title: "Conteúdos Alternativos", paragraph: "Explora outras experiências para além de cinema, com a qualidade de som e imagem das nossas salas (Óperas, Bailados, Concertos)." },
     { giftImg: gc_banner_gaming, title: "Gaming", paragraph: "Inscreve-te, assiste e participa nas nossas experiências Gaming (*produto temporariamente indisponível)" },
   ];
+
+  const numberListInfo = [
+    {title: "Escolhe o filme e a sessão", paragraph: "Escolhe um filme em exibição numa sala de cinema NOS ou daqueles que te propomos. A reserva tem de ser feita até 72h antes do início da sessão."},
+    {title: "Reserva a tua sala de cinema", paragraph: (<p>O aluguer da sala pode ser feito no balcão do cinema(*)<br /> <br /> Para mais informações contacta-nos através do e-mail: cinemas@nos.pt <br /><br /><br />(*) exclui sessões corporativas</p>)},
+    {title: "Prepara a tua lista de convidados", paragraph: "Escolhe com quem queres partilhar esta experiência."},
+    {title: "Bom filme!", paragraph: "Prepara-te para uma experiência inesquecível."},
+  ]
 
   const handleMovieTypeClick = () => setNowPlaying(!nowPlaying);
 
@@ -150,6 +161,8 @@ function App() {
           <GiftCard key={index} giftImg={giftCard.giftImg} title={giftCard.title} paragraph={giftCard.paragraph} />
         ))}
       </div>
+      <Banner2Div title="Uma sala só para ti" paragraph="Agora podes ter uma sessão de cinema exclusiva para ti e para os teus convidados em qualquer sala dos Cinemas NOS." image={cinemasSalas}/>
+      <NumberList numberListInfo={numberListInfo}/>
     </div>
   );
 }

@@ -1,0 +1,24 @@
+@use "../../Assets/Styles/mixins.scss" as mix;
+@use "../../Assets/Styles/variables.scss" as var;
+
+
+#number-list-main{
+  padding: 0 90px;
+  color: white;
+
+  ul{
+    width: 100%;
+    display: flex;
+    gap: 20px;
+    padding: 0;
+    list-style: none;
+
+    li{
+      max-width: 425px;
+
+      h2{font-size: 80px; margin: 0;}
+      h3{font-size: 24px; color: #eb84cd;}
+      p{font-size: 18px;}
+    }
+  }
+}

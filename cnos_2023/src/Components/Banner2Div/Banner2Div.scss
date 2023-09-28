@@ -1,0 +1,30 @@
+@use "../../Assets/Styles/mixins.scss" as mix;
+@use "../../Assets/Styles/variables.scss" as var;
+
+#banner-2divs-main{
+  margin: 60px 0;
+  display: flex;
+  flex-direction: row;
+  align-items: center;
+  padding: 0 90px;
+
+  #banner-2divs-info{
+    width: 50%;
+    h2{
+      font-size: 40px;
+      color: #eb84cd;
+      font-weight: bold;
+    }
+    p{
+      font-size: 18px;
+      color: white;
+    }
+  }
+
+  #banner-2divs-image{
+    width: 50%;
+    img{
+      width: 100%;
+    }
+  }
+}
