@@ -93,101 +93,198 @@ body {
 }
 
 @media (min-width: 168px) and (max-width: 550px) {
-	.header-main{
-		#search{
-			width: 30% !important;
-			background-color: transparent !important;
-			input{
-				display: none !important;
+	.header-main {
+		width: initial;
+    background-color: #fcd200;
+    padding: 0 !important;
+		position: initial !important;
+		.header-content {
+			flex-wrap: nowrap !important;
+			width: initial !important;
+			#search {
+				width: initial !important;
+				background-color: transparent !important;
+				margin: 0 !important;
+				min-width: 0 !important;
+				padding: 0 !important;
+				.search-input {
+					display: none !important;
+				}
+			}
+		}
+		.menu-bar {
+			width: initial !important;
+			padding: 0 !important;
+			position: relative;
+			ul {
+				background-color: rgba($color: #000000, $alpha: 0.5);
+				position: absolute;
+				display: flex !important;
+				justify-content: space-around;
+				gap: 0px !important;
+				padding: 10px 0;
+				width: 100% !important;
 			}
 		}
 	}
 
-	.header-content{
-		flex-wrap: nowrap !important;
-		padding: 0 20px;
+	#main-intro {
+		padding-top: 90px !important;
 	}
 
-	.menu-bar{
-		padding: 10px 0 !important;
-		width: 90%;
-
-		ul{
-			display: flex !important;
-			align-items: center !important;
-			padding: 0 20px;
-			gap: 20px !important;
-			text-align: center;
-		}
-	}
-
-	#main-intro{
-		padding-top: 130px !important;
-	}
-
-	#main-intro-content{
+	#main-intro-content {
 		flex-direction: column;
-		padding-top: 0;
+		padding-top: 0 !important;
 
-		#video-player{
+		#video-player {
 			width: 100% !important;
-			mask-image: linear-gradient(to bottom, rgb(0, 0, 0) 60%, transparent 100%) !important;
+			mask-image: linear-gradient(
+				to bottom,
+				rgb(0, 0, 0) 60%,
+				transparent 100%
+			) !important;
 		}
-		.movie-info{
+		.movie-info {
 			width: 100% !important;
-			.movie-info-container{
+			.movie-info-container {
 				padding: 20px;
 			}
 		}
 	}
 
-  #playing-movies{
+	#playing-movies {
 		padding: 0 20px !important;
 	}
 
 	.movies-category {
 		padding: 0 !important;
 	}
-  .movies-category-content {
+
+	.movies-category-content {
 		flex-direction: column !important;
 		margin: 20px 0;
-		span{
+		span {
 			justify-content: center;
-			h2{
+			h2 {
 				font-size: 18px;
 			}
 		}
-		.check-all-movies{
+		.check-all-movies {
 			justify-content: center !important;
 		}
 	}
 
-	#cinemas-banner{
+	#all-movies-main {
+		#movie-filter-menus {
+			display: none !important;
+			padding: 0 !important;
+			h2 {
+				font-size: 20px;
+			}
+		}
+		#movie-filter-menus-mobile {
+			display: block !important;
+			padding: 0 !important;
+			h2 {
+				font-size: 20px;
+			}
+		}
+		#all-movies-list {
+			padding: 0 !important;
+
+			ul {
+				grid-template-columns: repeat(1, 1fr) !important;
+				justify-items: center;
+			}
+		}
+	}
+
+	#cinemas-banner {
 		width: 100% !important;
 		padding: 0 20px !important;
 	}
-	#cinemas-list-main{
+
+	#cinemas-list-main {
 		padding: 0 20px !important;
 	}
-	#banner{
+
+	#banner {
 		height: max-content !important;
 		margin: 80px 0 !important;
-		#banner-content{
+		#banner-content {
 			padding: 0 20px !important;
 
-			h2{
+			h2 {
 				font-size: 30px !important;
 			}
 		}
 	}
 
-	#gift-card-list{
+	#banner-2divs-main {
+		flex-direction: column !important;
+		padding: 0 20px !important;
+		margin: 30px 0;
+		#banner-2divs-info {
+			width: 100% !important;
+		}
+		#banner-2divs-image {
+			width: 100% !important;
+		}
+	}
+
+	#gift-card-list {
 		padding: 0 20px !important;
 
-		#gift-card{
+		#gift-card {
 			height: 380px;
-			#gift-bg{
+			#gift-bg {
 				height: 280px !important;
+			}
+		}
+	}
+
+	#number-list-main{
+		padding: 0 20px !important;
+	}
+
+	#footer-main{
+		#formatos{
+		padding: 0 20px !important;
+		flex-direction: column !important;
+			span {
+				flex-direction: column !important;
+				h2{
+					font-size: 30px !important;
+				}
+				img{
+					margin: 20px 0;
+				}
+			} 
+		}
+
+		#appInfo{
+			padding: 0 20px !important;
+			flex-direction: column !important;
+			height: auto !important;
+			padding: 20px 0 !important;
+
+			#appInfo-icons{
+				flex-direction: column !important;
+				row-gap: 20px !important;
+			}
+
+		}
+		#footer-links{
+			padding: 0 !important;
+			flex-direction: column !important;
+			height: auto !important;
+			padding: 40px 0 !important;
+			row-gap: 20px !important;
+
+			#menu-links{
+				flex-direction: column !important;
+				text-align: center !important;
+				row-gap: 20px !important;
 			}
 		}
 	}
