@@ -30,7 +30,7 @@
 
     #video-player{
       mask-image: linear-gradient(to right, rgba(0, 0, 0, 1.0) 60%, transparent 100%);
-      background-position: center;
+      background-size: cover;
       width: 55%;
       height: 100%;
       margin: 0;
