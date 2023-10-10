@@ -2,22 +2,24 @@
 @use "../../Assets/Styles/variables.scss" as var;
 
 .header-main {
-  width: 100%;
+	width: 100%;
   position: fixed;
+	top: 0;
   z-index: 1;
+	background-color: var.$primaryColor;
+	border-bottom: 1px solid #fcd200;
+	
 	.header-content {
+		position: relative;
 		display: flex;
-		flex-wrap: wrap;
 		align-items: center;
 		justify-content: space-around;
 		min-height: 55px;
-		background-color: var.$primaryColor;
-		border-bottom: 1px solid #fcd200;
 		width: 100%;
-		span {
+		#nos-cinemas-logo {
 			display: flex;
 			gap: 10px;
-			width: 30%;
+			/* width: 30%; */
 			h2 {
 				font-weight: 100;
 			}
@@ -26,32 +28,88 @@
 				width: 70px;
 			}
 		}
-	}
-	#search {
-		align-items: center;
-		width: 40%;
-		justify-content: space-between;
-		background-color: var.$darkPrimaryColor;
-		border-radius: 8px;
-		border: none;
-		padding: 0 10px;
-		.search-input {
-			width: 100%;
-			padding: 16px;
-			font-size: 16px;
-			background: none;
+
+		#search {
+			display: flex;
+			align-items: center;
+			justify-content: space-between;
+			background-color: var.$darkPrimaryColor;
+			border-radius: 8px;
 			border: none;
-			&::placeholder {
-				color: black;
-			}
-			&:focus {
-				outline: none;
+			padding: 0 10px;
+			min-width: 100px;
+			width: 500px;
+			margin: 0 20px;
+			position: relative;
+			.search-input {
+				width: 100%;
+				padding: 16px;
+				font-size: 16px;
+				background: none;
 				border: none;
-				text-decoration: none;
+				&::placeholder {
+					color: black;
+				}
+				&:focus {
+					outline: none;
+					border: none;
+					text-decoration: none;
+				}
 			}
-		}
-		.icon {
-			@include mix.icon;
+			.icon {
+				@include mix.icon;
+			}
+			#search-results{
+				display: none;
+				&-active{
+					display: block;
+					background-color: #2a2a33;
+					border-radius: 12px;
+					min-width: 400px;
+					max-width: 600px;
+					height: auto;
+					min-height: 100px;
+					position: absolute;
+					top: 50px;
+					z-index: 1;
+					padding: 0 20px;
+					h3{
+						color: var.$primaryColor;
+						font-size: 18px;
+						font-weight: bold;
+					}
+
+					h4{
+						padding: 10px;
+						color: #94959d;
+						font-size: 14px;
+						font-weight: normal;
+						border: 1px solid transparent;
+						margin: 10px 0;
+						transition-duration: 0.2s;
+						&:hover{
+							transition-duration: 0.2s;
+							cursor: pointer;
+							border-radius: 8px;
+							background-color: #1b1b21;
+							color: var.$highlightColor;
+						}
+					}
+					hr{
+						height: 1px;
+						background-color: #94959d;
+						border: none;
+					}
+				}
+			}
+
 		}
 	}
+		#payment-window-overflow{
+			position: relative;
+			height: 100%;
+			width: 100%;
+			background-color: #1b1b21;
+			margin: 0 auto;
+		}
 }
