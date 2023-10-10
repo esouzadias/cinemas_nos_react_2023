@@ -9,7 +9,7 @@ function NumberList({numberListInfo}) {
           <li key={index}>
             <h2>{index + 1}</h2>
             <h3>{item.title}</h3>
-            <p>{item.paragraph}</p>
+            <span>{item.paragraph}</span>
           </li>
         ))}
       </ul>
