@@ -4,7 +4,7 @@ import CinemasList from './CinemasList.js'
 import { FontAwesomeIcon } from '@fortawesome/react-fontawesome'
 import { faChevronDown } from '@fortawesome/free-solid-svg-icons'
 
-function Cinemas() {
+function Cinemas({cinemasList}) {
   const [selectedOption, setSelectedOption] = useState('');
 
   const handleListClick = (option) => {
@@ -32,37 +32,37 @@ function Cinemas() {
           <span>Grande Lisboa</span>
           <FontAwesomeIcon className='icon' icon={faChevronDown}/>
         </h3>
-        {selectedOption === "Grande Lisboa" && (<CinemasList selectedOption={selectedOption}/>)}
+        {selectedOption === "Grande Lisboa" && (<CinemasList cinemasList={cinemasList} selectedOption={selectedOption}/>)}
         
         <h3 className="cinemas-list-selection" onClick={() => handleListClick('Grande Porto')}>
           <span>Grande Porto</span>
           <FontAwesomeIcon className='icon' icon={faChevronDown}/>
         </h3>
-        {selectedOption === "Grande Porto" && (<CinemasList selectedOption={selectedOption}/>)}
+        {selectedOption === "Grande Porto" && (<CinemasList cinemasList={cinemasList} selectedOption={selectedOption}/>)}
         
         <h3 className="cinemas-list-selection" onClick={() => handleListClick('Norte')}>
           <span>Norte</span>
           <FontAwesomeIcon className='icon' icon={faChevronDown}/>
         </h3>
-        {selectedOption === "Norte" && (<CinemasList selectedOption={selectedOption}/>)}
+        {selectedOption === "Norte" && (<CinemasList cinemasList={cinemasList} selectedOption={selectedOption}/>)}
         
         <h3 className="cinemas-list-selection" onClick={() => handleListClick('Centro')}>
           <span>Centro</span>
           <FontAwesomeIcon className='icon' icon={faChevronDown}/>
         </h3>
-        {selectedOption === "Centro" && (<CinemasList selectedOption={selectedOption}/>)}
+        {selectedOption === "Centro" && (<CinemasList cinemasList={cinemasList} selectedOption={selectedOption}/>)}
         
         <h3 className="cinemas-list-selection" onClick={() => handleListClick('Sul')}>
           <span>Sul</span>
           <FontAwesomeIcon className='icon' icon={faChevronDown}/>
         </h3>
-        {selectedOption === "Sul" && (<CinemasList selectedOption={selectedOption}/>)}
+        {selectedOption === "Sul" && (<CinemasList cinemasList={cinemasList} selectedOption={selectedOption}/>)}
 
         <h3 className="cinemas-list-selection" onClick={() => handleListClick('Madeira')}>
           <span>Madeira</span>
           <FontAwesomeIcon className='icon' icon={faChevronDown}/>
         </h3>
-        {selectedOption === "Madeira" && (<CinemasList selectedOption={selectedOption}/>)}
+        {selectedOption === "Madeira" && (<CinemasList cinemasList={cinemasList} selectedOption={selectedOption}/>)}
       </div>
     </div>
   )

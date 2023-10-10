@@ -1,8 +1,8 @@
 import React from 'react'
 import './CinemasList.scss'
 
-function CinemasList({ selectedOption }) {
-  const cinemasList = {
+function CinemasList({ selectedOption, cinemasList }) {
+  /* const cinemasList = {
     "Grande Lisboa": [
       { "cinema": "Alfragide", "salas": 8 },
       { "cinema": "Amoreiras", "salas": 12 },
@@ -46,7 +46,7 @@ function CinemasList({ selectedOption }) {
       { "cinema": "La Vie", "salas": 6 },
       { "cinema": "Porto Santo", "salas": 7 }
     ]
-  }
+  } */
   const selectedCinemas = cinemasList[selectedOption] || [];
 
   return (
