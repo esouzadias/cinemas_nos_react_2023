@@ -1,0 +1,66 @@
+@use "../../Assets/Styles/mixins.scss" as mix;
+@use "../../Assets/Styles/variables.scss" as var;
+
+#beneficio{
+  background-color: #2a2a33;
+  color: #94959d;
+  font-size: 15px;
+  display: flex;
+  flex-direction: row;
+  align-items: center;
+  justify-content: space-between;
+  padding: 20px;
+  gap: 20px;
+  transition-duration: 0.2s;
+  h3, p{
+    margin: 0;
+  }
+  p{
+    font-size: 12px;
+  }
+  .icon{
+    color: var.$primaryColor;
+  }
+  &:hover{
+    transition-duration: 0.2s;
+    color: var.$primaryColor;
+  }
+}
+
+.beneficio-disabled{
+  transition-duration: 0.2  ;
+  opacity: 0.5 !important;
+  &:hover{
+    cursor: default !important;
+    div{
+      cursor: default !important;
+      color: #94959d;
+    }
+  }
+    .icon{
+      color: #94959d !important;
+    }
+}
+
+.beneficio-active{
+  background-color: var.$primaryColor !important;
+  color: black !important;
+  font-size: 15px;
+  display: flex;
+  flex-direction: row;
+  align-items: center;
+  justify-content: space-between;
+  padding: 20px;
+  gap: 20px;
+  transition-duration: 0.2s;
+  h3, p{
+    margin: 0;
+  }
+  p{
+    font-size: 12px;
+  }
+  .icon{
+    color: black !important;
+  }
+}
+

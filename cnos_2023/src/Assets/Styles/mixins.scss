@@ -36,3 +36,11 @@
   font-weight: normal;
   font-size: 32px;
 }
+
+@mixin menuButton{
+  background-color: #5b5c64;
+  padding: 10px;
+  font-weight: normal;
+  font-size: 20px;
+  border-radius: 10px;
+}
