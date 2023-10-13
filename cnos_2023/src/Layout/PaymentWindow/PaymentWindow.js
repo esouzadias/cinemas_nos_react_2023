@@ -5,12 +5,15 @@ import Beneficio from './Beneficio'
 
 import { FontAwesomeIcon } from '@fortawesome/react-fontawesome'
 import { faClose } from '@fortawesome/free-solid-svg-icons'
-import { faCheck } from '@fortawesome/free-solid-svg-icons'
 
 import mBox from '../../Assets/Images/menu_box.png'
 import mPipocas from '../../Assets/Images/menu_pipocas.png'
+import pipocasIcon from '../../Assets/Images/popcorn_icon.png'
+import pipocasIndiv from '../../Assets/Images/pipocas_individual.png'
+import refrigerante from '../../Assets/Images/refrigerante.png'
+import snacks from '../../Assets/Images/snacks.png'
 
-function PaymentWindow({ openPaymentWindow, setOpenPaymentWindow, selectedMovie, isAdult, /* cinemasList */ }) {
+function PaymentWindow({ openPaymentWindow, setOpenPaymentWindow, selectedMovie, isAdult }) {
   const data = new Date();
   const diasDaSemana = ['Domingo', 'segunda-feira', 'terça-feira', 'quarta-feira', 'quinta-feira', 'sexta-feira', 'Sábado'];
   const diaDaSemana = diasDaSemana[data.getDay()];
@@ -36,8 +39,25 @@ function PaymentWindow({ openPaymentWindow, setOpenPaymentWindow, selectedMovie,
   const [currentProgress, setCurrentProgress] = useState(10);
   const [total, setTotal] = useState("6,35");
 
-  const [checkBoxClicked, setCheckBoxClicked] = useState(false);
+  const [sizeOptionActive, setSizeOptionActive] = useState(true);
+  const [sizeSelection, setSizeSelection] = useState("");
 
+  //* LISTS
+  const beneficiosNOSList = [
+    { title: "Vale Cinema", subtitle: "", paragraph: "Valida 1 código de cada vez.", id: "vcine" },
+    { title: "WTF 2f ou 4f", paragraph: "", price: `€ ${6.25}`, id: "wtf" },
+    { title: "Cartão NOS (1=2)", paragraph: "", price: `€ ${6.25}`, id: "cNOS" },
+    { title: "Cartão NOS_Menu", paragraph: "", price: `€ ${6.25}`, id: "cNOSMenu" },
+  ]
+
+  const outrosBeneficiosList = [
+    { title: "Bilhete 2 ou 4 feira", paragraph: "", price: `€ ${6.25}`, id: "b24f" },
+    { title: "Senior", paragraph: "Idade igual ou superior a 65 anos", price: `€ ${6.35}`, id: "senior" },
+    { title: "Criança até 10 anos", paragraph: "Idade igual ou inferior a 10 anos", price: `€ ${6.35}`, id: "c10anos" },
+    { title: "Bilhete Família (2pax)", paragraph: "1 adulto + 1 criança até 12 anos", price: `€ ${10.50}`, id: "bfam" },
+  ]
+
+  //* FUNCTIONS
   const calculateSessions = (duration) => {
     const startHour = 11;
     const endHour = 23;
@@ -60,10 +80,34 @@ function PaymentWindow({ openPaymentWindow, setOpenPaymentWindow, selectedMovie,
     return sessions;
   };
 
-  const calculateTotal = () => {
+  const calculateTotal = (selectedValue) => {
     const bilhetePorPessoa = 6.35;
     const totalBilhetes = selectedNumeroPessoas * bilhetePorPessoa;
-    setTotal(totalBilhetes);
+    let additionalTotal = 0;
+
+    if(selectedValue){
+      const priceValue = extractNumberFromString(selectedValue);
+      additionalTotal = priceValue;
+    } else {
+      // Busca todos os elementos com o id "price"
+      const priceElements = document.querySelectorAll('#price');
+
+      // Soma os valores extraídos ao total apenas se o elemento estiver selecionado
+      priceElements.forEach((element) => {
+        // Verifica se o elemento pai (option ou img) tem a classe 'active'
+        const isSelected = element.classList.contains('active');
+        if (isSelected) {
+          element.classList.remove('active');
+          const priceString = element.textContent; // Obtém o texto dentro do elemento
+          const priceValue = extractNumberFromString(priceString); // Converte para número
+          additionalTotal += priceValue;
+        }
+      });
+    }
+    // Adiciona o valor adicional ao total
+    const finalTotal = totalBilhetes + additionalTotal;
+
+    setTotal(finalTotal);
   };
 
   // Função para gerar a matriz de bancos
@@ -118,20 +162,6 @@ function PaymentWindow({ openPaymentWindow, setOpenPaymentWindow, selectedMovie,
 
     setSeatsMatrix(newSeatsMatrix);
   };
-
-  const beneficiosNOSList = [
-    { title: "Vale Cinema", subtitle: "", paragraph: "Valida 1 código de cada vez.", id: "vcine" },
-    { title: "WTF 2f ou 4f", paragraph: "", price: `€ ${6.25}`, id: "wtf" },
-    { title: "Cartão NOS (1=2)", paragraph: "", price: `€ ${6.25}`, id: "cNOS" },
-    { title: "Cartão NOS_Menu", paragraph: "", price: `€ ${6.25}`, id: "cNOSMenu" },
-  ]
-
-  const outrosBeneficiosList = [
-    { title: "Bilhete 2 ou 4 feira", paragraph: "", price: `€ ${6.25}`, id: "b24f" },
-    { title: "Senior", paragraph: "Idade igual ou superior a 65 anos", price: `€ ${6.35}`, id: "senior" },
-    { title: "Criança até 10 anos", paragraph: "Idade igual ou inferior a 10 anos", price: `€ ${6.35}`, id: "c10anos" },
-    { title: "Bilhete Família (2pax)", paragraph: "1 adulto + 1 criança até 12 anos", price: `€ ${10.50}`, id: "bfam" },
-  ]
 
   const handleSwitchCity = (e) => {
     if (e.currentTarget.className != "cidade-active") {
@@ -201,6 +231,47 @@ function PaymentWindow({ openPaymentWindow, setOpenPaymentWindow, selectedMovie,
     });
   };
 
+  const handleSizeSelection = (spanId) => {
+    setSizeSelection(spanId);
+    const element = document.querySelector(`#${spanId}`);
+    element.classList.add("active");
+    handleMenuSelection(element);
+    calculateTotal();
+  }
+
+  const handleMenuSelection = (e) => {
+    document.querySelectorAll('.menu').forEach(menu => menu.classList.remove("active"));
+    if(e.currentTarget){
+      e.currentTarget.closest('.menu').classList.add("active")
+      e.currentTarget.querySelector("#price")?.classList.add("active");
+    } else {
+      e.closest('.menu').classList.add("active");
+    }
+    e.target ? calculateTotal(e.target.value) : calculateTotal();
+  }
+
+  const handleDrinkSelect = (e) => {
+    if (e.currentTarget.value === "agua") setSizeOptionActive(false);
+  }
+
+  const handleClearMenus = (e) => {
+    e.preventDefault();
+    document.querySelectorAll(".menu").forEach(menu => menu.classList?.remove("active"));
+    document.querySelectorAll("#price,.icon.active").forEach(item => item.classList.remove("active"));
+    calculateTotal();
+  }
+
+  const extractNumberFromString = (str) => {
+    if(str){
+      const cleanStr = str.replace('(', '').replace(')', '').replace('€', '').replace(',', '.');
+      // Converte a string para número
+      const number = parseFloat(cleanStr.replace(/[^0-9.]/g, ''));
+      return number;
+    }
+    return;
+  };
+
+  //* USE EFFECTS
   useEffect(() => {
     if (selectedMovie && selectedMovie.duration) {
       const sessions = calculateSessions(selectedMovie.duration);
@@ -220,7 +291,7 @@ function PaymentWindow({ openPaymentWindow, setOpenPaymentWindow, selectedMovie,
 
   useEffect(() => {
     calculateTotal();
-  }, [selectedNumeroPessoas]);
+  }, [selectedNumeroPessoas, sizeSelection]);
 
   useEffect(() => {
     setActiveRoom(0);
@@ -230,238 +301,314 @@ function PaymentWindow({ openPaymentWindow, setOpenPaymentWindow, selectedMovie,
   return (
     <div id={`payment-window-main${openPaymentWindow ? '-active' : ''}`}>
       <div onClick={() => setOpenPaymentWindow(false)} id='pw-close-icon'><FontAwesomeIcon className='icon' icon={faClose} /></div>
-      <div id='payment-window-content' style={{backgroundImage: `linear-gradient(to top, rgba(42, 42, 51, 0.52), rgba(117, 19, 93, 0.73)), url(https://image.tmdb.org/t/p/w500${selectedMovie.backdrop_path})`}}>
-        <div id='movie-information'>
-          <div id='movie-info-content'>
-            <h3>{selectedMovie?.original_title}</h3>
-            <span>{isAdult ? `M18 • ${selectedMovie.duration} Min` : `M16 • ${selectedMovie.duration} Min • Sala: `}</span>
+      <div id='payment-window-container' style={{ backgroundImage: `url(https://image.tmdb.org/t/p/w500${selectedMovie.backdrop_path})` }}>
+        <div id='payment-window-content' >
+          <div id='movie-information'>
+            <div id='movie-info-content'>
+              <h3>{selectedMovie?.original_title}</h3>
+              <span>{isAdult ? `M18 • ${selectedMovie.duration} Min` : `M16 • ${selectedMovie.duration} Min • Sala: `}</span>
+            </div>
+            <div id='current-date-time'>
+              <span>{diaDaSemana}, {dia} de {mes} de {ano} <br /> {horas}:{minutos}h</span>
+            </div>
           </div>
-          <div id='current-date-time'>
-            <span>{diaDaSemana}, {dia} de {mes} de {ano} <br /> {horas}:{minutos}h</span>
-          </div>
-        </div>
-        <div id='movie-information-details'>
-          <hr />
-          <div id='cidades'>
-            {selectedMovie.salas.map((sala, index) => (
-              <div className={`cidades-content${sala.Cidade === selectedCity ? '-active' : ''}`} onClick={(e) => handleSwitchCity(e)}>
-                <span
-                  key={index}
-                  id='cidade'>{sala.Cidade}</span>
-              </div>
-            ))}
-          </div>
-          <div id='cinemas-by-city-main'>
-            {selectedMovie.salas?.filter((sala) => sala.Cidade === selectedCity).map((sala, index) => (
-              <div key={index} id='cinema-selection-box'>
-                <span>Cinema: </span>
-                <select value={selectedCinema} onChange={handleSwitchCinema}>
-                  {sala.Cinemas.map((cinema, index) => (
-                    <option key={index} value={cinema.Nome}>
-                      {cinema.Nome}
-                    </option>
-                  ))}
+          <div id='movie-information-details'>
+            <div id='cidades'>
+              {selectedMovie.salas.map((sala, index) => (
+                <div key={index} className={`cidades-content${sala.Cidade === selectedCity ? '-active' : ''}`} onClick={(e) => handleSwitchCity(e)}>
+                  <span
+                    id='cidade'>{sala.Cidade}</span>
+                </div>
+              ))}
+            </div>
+            <div id='cinemas-by-city-main'>
+              {selectedMovie.salas?.filter((sala) => sala.Cidade === selectedCity).map((sala, index) => (
+                <div key={index} id='cinema-selection-box'>
+                  <span>Cinema: </span>
+                  <select value={selectedCinema} onChange={handleSwitchCinema}>
+                    {sala.Cinemas.map((cinema, index) => (
+                      <option key={index} value={cinema.Nome}>
+                        {cinema.Nome}
+                      </option>
+                    ))}
+                  </select>
+                </div>
+              ))}
+              <div id='movie-sessions'>
+                <span>Sessões: </span>
+                <select>
+                  {movieSessions.map((session, index) => {
+                    const [sessionHour, sessionMinute] = session.split(':').map(Number);
+                    const currentTime = new Date();
+                    const currentHour = currentTime.getHours();
+                    const currentMinute = currentTime.getMinutes();
+                    const isSessionActive = currentHour < sessionHour || (currentHour === sessionHour && currentMinute <= sessionMinute);
+                    return (
+                      <option key={index} disabled={!isSessionActive}>
+                        {session}
+                      </option>
+                    );
+                  })}
                 </select>
               </div>
-            ))}
-            <div id='movie-sessions'>
-              <span>Sessões: </span>
-              <select>
-                {movieSessions.map((session, index) => {
-                  const [sessionHour, sessionMinute] = session.split(':').map(Number);
-                  const currentTime = new Date();
-                  const currentHour = currentTime.getHours();
-                  const currentMinute = currentTime.getMinutes();
-                  const isSessionActive = currentHour < sessionHour || (currentHour === sessionHour && currentMinute <= sessionMinute);
-                  return (
-                    <option key={index} disabled={!isSessionActive}>
-                      {session}
-                    </option>
-                  );
-                })}
-              </select>
-            </div>
 
-          </div>
-          <div id='payment-information'>
-            <div id='progress-bar'>
-              <div className="progress-bar-border">
-                <div className="progress-bar-fill" style={{ width: `${currentProgress}%` }}></div>
-              </div>
             </div>
-
-            <form>
-              <div id='form1' style={{ display: currentForm === 'form1' ? 'block' : 'none' }}>
-                <div id='numero-pessoas'>
-                  <h3>Quantas pessoas?</h3>
-                  <hr />
-                  <ul>
-                    {[1, 2, 3, 4, 5, 6].map((num, index) => (
-                      <li
-                        key={index}
-                        onClick={() => handleNumeroPessoasSelect(num)}
-                        className={`pessoa ${num === selectedNumeroPessoas ? 'active' : ''}`}
-                      >
-                        {num}
-                      </li>
-                    ))}
-                  </ul>
+            <div id='payment-information'>
+              <div id='progress-bar'>
+                <div className="progress-bar-border">
+                  <div className="progress-bar-fill" style={{ width: `${currentProgress}%` }}></div>
                 </div>
-                <div id='escolha-bancos-main'>
-                  <div id='escolha-bancos-content'>
-                    <h3>Escolha os bancos</h3>
-                    <span>Bancos preenchidos: {selectedBancos.length}</span>
+              </div>
+              <form>
+                <div id='form1' style={{ display: currentForm === 'form1' ? 'block' : 'none' }}>
+                  <div id='numero-pessoas'>
+                    <h3>Quantas pessoas?</h3>
                     <hr />
-                    <div id='escolha-bancos-container'>
-                      <div id='movie-screen'></div>
-                      {seatsMatrix.map((row, rowIndex) => (
-                        <div key={rowIndex} className='seat-row'>
-                          {row.map((seat, seatIndex) => (
-                            <div
-                              key={seatIndex}
-                              onClick={() => handleBancoSelect(rowIndex, seatIndex)}
-                              className={`banco ${seat} ${selectedBancos.some((banco) => banco.rowIndex === rowIndex && banco.seatIndex === seatIndex) ? 'active' : ''}`}
-                              id={`banco-${rowIndex}-${seatIndex}`}
-                            ></div>
-                          ))}
-                        </div>
+                    <ul>
+                      {[1, 2, 3, 4, 5, 6].map((num, index) => (
+                        <li
+                          key={index}
+                          onClick={() => handleNumeroPessoasSelect(num)}
+                          className={`pessoa ${num === selectedNumeroPessoas ? 'active' : ''}`}
+                        >
+                          {num}
+                        </li>
                       ))}
+                    </ul>
+                  </div>
+                  <div id='escolha-bancos-main'>
+                    <div id='escolha-bancos-content'>
+                      <h3>Escolha os bancos</h3>
+                      <span>Bancos preenchidos: {selectedBancos.length}</span>
+                      <hr />
+                      <div id='escolha-bancos-container'>
+                        <div id='movie-screen'></div>
+                        {seatsMatrix.map((row, rowIndex) => (
+                          <div key={rowIndex} className='seat-row'>
+                            {row.map((seat, seatIndex) => (
+                              <div
+                                key={seatIndex}
+                                onClick={() => handleBancoSelect(rowIndex, seatIndex)}
+                                className={`banco ${seat} ${selectedBancos.some((banco) => banco.rowIndex === rowIndex && banco.seatIndex === seatIndex) ? 'active' : ''}`}
+                                id={`banco-${rowIndex}-${seatIndex}`}
+                              ></div>
+                            ))}
+                          </div>
+                        ))}
+                      </div>
                     </div>
                   </div>
                 </div>
-              </div>
-              <div id='form2' style={{ display: currentForm === 'form2' ? 'block' : 'none' }}>
-                <div id='beneficios'>
-                  <h3>Tem algum beneficio?</h3>
-                  <hr />
-                  <div id='beneficios-content'>
-                    <div id='beneficios-list'>
-                      <ul>
-                        <span>Beneficios NOS
-                        </span>
-                        {beneficiosNOSList.map((beneficio, index) => (
-                          <li key={index} className='beneficio'>
-                            <Beneficio selectedNumeroPessoas={selectedNumeroPessoas} total={total} setTotal={setTotal} beneficio={beneficio} />
-                          </li>
-                        ))}
-                      </ul>
-                      <ul>
-                        <span>Outros Beneficios
-                        </span>
-                        {outrosBeneficiosList.map((beneficio, index) => (
-                          <li key={index} className='beneficio'>
-                            <Beneficio selectedNumeroPessoas={selectedNumeroPessoas} total={total} setTotal={setTotal} beneficio={beneficio} />
-                          </li>
-                        ))}
-                      </ul>
+                <div id='form2' style={{ display: currentForm === 'form2' ? 'block' : 'none' }}>
+                  <div id='beneficios'>
+                    <h3>Tem algum beneficio?</h3>
+                    <hr />
+                    <div id='beneficios-content'>
+                      <div id='beneficios-list'>
+                        <ul>
+                          <span>Beneficios NOS
+                          </span>
+                          {beneficiosNOSList.map((beneficio, index) => (
+                            <li key={index} className='beneficio'>
+                              <Beneficio selectedNumeroPessoas={selectedNumeroPessoas} total={total} setTotal={setTotal} beneficio={beneficio} />
+                            </li>
+                          ))}
+                        </ul>
+                        <ul>
+                          <span>Outros Beneficios
+                          </span>
+                          {outrosBeneficiosList.map((beneficio, index) => (
+                            <li key={index} className='beneficio'>
+                              <Beneficio selectedNumeroPessoas={selectedNumeroPessoas} total={total} setTotal={setTotal} beneficio={beneficio} />
+                            </li>
+                          ))}
+                        </ul>
+                      </div>
                     </div>
                   </div>
                 </div>
-              </div>
-              <div id='form3' style={{ display: currentForm === 'form3' ? 'block' : 'none' }}>
-                <div id='menu-bar'>
-                  <h3>Deseja algum artigo de bar?</h3>
-                  <hr />
-                  <div id='menu-bar-content'>
-                    <ul id='menu-bar-list'>
-                      <li id='menu'>
-                        <h3>Menus</h3>
-                        <div id='menus-list'>
-                          <div className='menu'>
-                            <h4>Menu Pipoca (Pipoca + Bebiba) <span onClick={() => setCheckBoxClicked(true)} id='checkbox'> <FontAwesomeIcon className='icon' icon={faCheck} style={{opacity: `${checkBoxClicked ? '1' : '0'}`}}/></span></h4>
-                            <div id='menu-pipoca'>
-                              <div className='menu-img'>
-                                <img src={mPipocas}/>
+                <div id='form3' style={{ display: currentForm === 'form3' ? 'block' : 'none' }}>
+                  <div id='menu-bar'>
+                    <h3>Deseja algum artigo de bar?</h3>
+                    <hr />
+                    <div id='menu-bar-content'>
+                      <ul id='menu-bar-list'>
+                        <li id='menu'>
+                          <h3>Menus</h3>
+                          <div id='menus-list'>
+                            <div className='menu'>
+                              <h4>Menu Pipoca (Pipoca + Bebiba)</h4>
+                              <div id='menu-pipoca'>
+                                <div className='icon-size-container'>
+                                  <span id='sm'
+                                    className={`icon ${sizeSelection === 'sm' ? 'active' : ''}`}
+                                    onClick={() => handleSizeSelection('sm')}>
+                                    <img className='icon' id='ism' src={pipocasIcon} /><label>S <span className={sizeSelection === 'sm' ? 'active' : ''} id='price'>(€6,00)</span></label></span>
+                                  <span id='m'
+                                    className={`icon ${sizeSelection === 'm' ? 'active' : ''}`}
+                                    onClick={() => handleSizeSelection('m')}>
+                                    <img className='icon' id='im' src={pipocasIcon} /><label>M <span  className={sizeSelection === 'm' ? 'active' : ''} id='price'>(€6,50)</span></label></span>
+                                  <span id='l'
+                                    className={`icon ${sizeSelection === 'l' ? 'active' : ''}`}
+                                    onClick={() => handleSizeSelection('l')}>
+                                    <img className='icon' id='il' src={pipocasIcon} /><label>L <span  className={sizeSelection === 'l' ? 'active' : ''} id='price'>(€7,15)</span></label></span>
+                                </div>
+                                <div className='menu-details'>
+                                  <div className='menu-img'>
+                                    <img src={mPipocas} />
+                                  </div>
+                                  <div className='menu-options'>
+                                    <label>Tipo</label>
+                                    <select onChange={handleMenuSelection}>
+                                      <option value="salgadas">salgadas</option>
+                                      <option value="doces">doces</option>
+                                      <option value="mistas">mistas</option>
+                                    </select>
+                                    <label>Bebida</label>
+                                    <select onChange={handleMenuSelection}>
+                                      <option value="coca-cola">coca-cola</option>
+                                      <option value="coca-cola-zero">coca-cola zero</option>
+                                      <option value="fanta-laranja">fanta laranja</option>
+                                      <option value="spite">sprite</option>
+                                      <option value="nestea-limão">nestea limão</option>
+                                      <option value="nestea-pêssego">nestea pêssego</option>
+                                    </select>
+                                  </div>
+                                </div>
                               </div>
-                              <div className='menu-options'>
-                                <label>Tamanho</label>
-                                <select>
-                                  <option value="pequeno">pequeno</option>
-                                  <option value="medio">medio</option>
-                                  <option value="grande">grande</option>
-                                </select>
+                            </div>
+                            <hr />
+                            <div className='menu'>
+                              <h4>Menu Box (Pipoca + Bebida (2x))</h4>
+                              <div id='menu-box-container'>
+                                <div className='icon-size-container'>
+                                  <span><img className='icon' id='u' src={pipocasIcon} /><label>Único (€7,90)</label></span>
+                                </div>
                                 <label>Tipo</label>
-                                <select>
+                                <select onChange={handleMenuSelection}>
                                   <option value="salgadas">salgadas</option>
                                   <option value="doces">doces</option>
                                   <option value="mistas">mistas</option>
                                 </select>
-                                <label>Bebida</label>
-                                <select>
-                                  <option value="coca-cola">coca-cola</option>
-                                  <option value="coca-cola-zero">coca-cola zero</option>
-                                  <option value="fanta-laranja">fanta laranja</option>
-                                  <option value="spite">sprite</option>
-                                  <option value="nestea-limão">nestea limão</option>
-                                  <option value="nestea-pêssego">nestea pêssego</option>
-                                </select>
+                                <div id='menu-box'>
+                                  <div className='menu-img'>
+                                    <img src={mBox} />
+                                  </div>
+                                  <div className='menu-options'>
+                                    <label>1º Bebida</label>
+                                    <select onChange={handleMenuSelection}>
+                                      <option value="coca-cola">coca-cola</option>
+                                      <option value="coca-cola-zero">coca-cola zero</option>
+                                      <option value="fanta-laranja">fanta laranja</option>
+                                      <option value="spite">sprite</option>
+                                      <option value="nestea-limão">nestea limão</option>
+                                      <option value="nestea-pêssego">nestea pêssego</option>
+                                    </select>
+                                    <label>2º Bebida</label>
+                                    <select onChange={handleMenuSelection}>
+                                      <option value="coca-cola">coca-cola</option>
+                                      <option value="coca-cola-zero">coca-cola zero</option>
+                                      <option value="fanta-laranja">fanta laranja</option>
+                                      <option value="spite">sprite</option>
+                                      <option value="nestea-limão">nestea limão</option>
+                                      <option value="nestea-pêssego">nestea pêssego</option>
+                                    </select>
+                                  </div>
+                                </div>
                               </div>
                             </div>
                           </div>
-                          <hr />
-                          <div className='menu'>
-                            <h4>Menu Box (Pipoca + Bebida (2x)) <span onClick={() => setCheckBoxClicked(true)} id='checkbox'> <FontAwesomeIcon className='icon' icon={faCheck} style={{opacity: `${checkBoxClicked ? '1' : '0'}`}}/></span></h4>
-                            <div id='menu-box-container'>
-                              <div id='menu-box'>
-                                <div className='menu-img'>
-                                  <img src={mBox}/>
-                                </div>
-                                <div className='menu-options'>
-                                  <label>Tamanho</label>
-                                  <select>
-                                    <option value="pequeno">pequeno</option>
-                                    <option value="medio">medio</option>
-                                    <option value="grande">grande</option>
-                                  </select>
-                                  <label>Tipo</label>
-                                  <select>
-                                    <option value="salgadas">salgadas</option>
-                                    <option value="doces">doces</option>
-                                    <option value="mistas">mistas</option>
-                                  </select>
+                        </li>
+                        <li id='individuais'>
+                          <h3>Individuais</h3>
+                          <ul className='indiv-menus'>
+                            <li>
+                              <div className='menu'>
+                                <h4>Pipocas</h4>
+                                <div>
+                                  <span>
+                                    <img src={pipocasIndiv} />
+                                  </span>
+                                  <div className='menu-indiv-options'>
+                                    <label>Tipo</label>
+                                    <select onChange={handleMenuSelection}>
+                                      <option value="salgadas">salgadas</option>
+                                      <option value="doces">doces</option>
+                                      <option value="mistas">mistas</option>
+                                    </select>
+                                    <label>Tamanho</label>
+                                    <select onChange={handleMenuSelection}>
+                                      <option id='price' value='pequena (€3,60)'>pequena (€3,60)</option>
+                                      <option id='price' value='media (€3,90)'>média (€3,90)</option>
+                                      <option id='price' value='grande (€4,10)'>grande (€4,10)</option>
+                                    </select>
+                                  </div>
                                 </div>
                               </div>
-                              <section>
-                                <label>1º Bebida</label>
-                                <select>
-                                  <option value="coca-cola">coca-cola</option>
-                                  <option value="coca-cola-zero">coca-cola zero</option>
-                                  <option value="fanta-laranja">fanta laranja</option>
-                                  <option value="spite">sprite</option>
-                                  <option value="nestea-limão">nestea limão</option>
-                                  <option value="nestea-pêssego">nestea pêssego</option>
-                                </select>
-                                <label>2º Bebida</label>
-                                <select>
-                                  <option value="coca-cola">coca-cola</option>
-                                  <option value="coca-cola-zero">coca-cola zero</option>
-                                  <option value="fanta-laranja">fanta laranja</option>
-                                  <option value="spite">sprite</option>
-                                  <option value="nestea-limão">nestea limão</option>
-                                  <option value="nestea-pêssego">nestea pêssego</option>
-                                </select>
-                              </section>
-                            </div>
-                          </div>
-                        </div>
-
-                      </li>
-                      {/* <li id='outros'>
-                        <div>Pipocas</div>
-                        <div>Bebidas</div>
-                        <div>Snacks</div>
-                      </li> */}
-                    </ul>
+                            </li>
+                            <li>
+                              <div className='menu'>
+                                <h4>Bebidas</h4>
+                                <div>
+                                  <span>
+                                    <img src={refrigerante} />
+                                  </span>
+                                  <div className='menu-indiv-options'>
+                                    <label>Bebida</label>
+                                    <select onChange={handleMenuSelection}>
+                                      <option id='price' value="agua (€1,50)">água (€1,50)</option>
+                                      <option value="coca-cola">coca-cola</option>
+                                      <option value="coca-cola-zero">coca-cola zero</option>
+                                      <option value="fanta-laranja">fanta laranja</option>
+                                      <option value="spite">sprite</option>
+                                      <option value="nestea-limão">nestea limão</option>
+                                      <option value="nestea-pêssego">nestea pêssego</option>
+                                      <option id='price' value="monster-mango (€3,00)">monster mango (€3,00)</option>
+                                      <option id='price' value="monster-energy (€3,00)">monster energy (€3,00)</option>
+                                      <option id='price' value="monster-ultra (€3,00)">monster ultra (€3,00)</option>
+                                    </select>
+                                    <label>Tamanho</label>
+                                    <select className={`${sizeOptionActive ? 'active' : ''}`} onChange={handleMenuSelection}>
+                                      <option id='price' value='pequena (€2,75)'>pequena (€2,75)</option>
+                                      <option id='price' value='media (€3,00)'>média (€3,00)</option>
+                                      <option id='price' value='grande (€3,25)'>grande (€3,25)</option>
+                                    </select>
+                                  </div>
+                                </div>
+                              </div>
+                            </li>
+                            <li>
+                              <div className='menu'>
+                                <h4>Snacks</h4>
+                                <div>
+                                  <span>
+                                    <img src={snacks} />
+                                  </span>
+                                  <div className='menu-indiv-options'>
+                                    <label>Tipo de toping</label>
+                                    <select onChange={handleMenuSelection.bind(this)}>
+                                      <option id='price' value="chocolate (€1,00)">chocolate (€1,00)</option>
+                                      <option value="amendoim (€1,00)">amendoim (€1,00)</option>
+                                    </select>
+                                  </div>
+                                </div>
+                              </div>
+                            </li>
+                          </ul>
+                        </li>
+                      </ul>
+                      <span className='clearButton'><button className='button' onClick={handleClearMenus}>Limpar</button></span>
+                    </div>
                   </div>
                 </div>
-              </div>
-            </form>
+              </form>
 
-            <div id='total-navigation'>
-              <h3>{`Total: € ${Number(total).toFixed(2)}`}</h3>
-              <div className='form-buttons'>
-                <button onClick={() => handleSwitchForm('menos')}>Menos</button>
-                <button onClick={() => handleSwitchForm('mais')}>Mais</button>
+              <div id='total-navigation'>
+                <h3>{`Total: € ${Number(total).toFixed(2)}`}</h3>
+                <div className='form-buttons'>
+                  <button onClick={() => handleSwitchForm('menos')}>Menos</button>
+                  <button onClick={() => handleSwitchForm('mais')}>Mais</button>
+                </div>
               </div>
             </div>
           </div>
