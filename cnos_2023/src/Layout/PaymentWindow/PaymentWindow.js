@@ -33,7 +33,7 @@ function PaymentWindow({ openPaymentWindow, setOpenPaymentWindow, selectedMovie,
   const [selectedBancos, setSelectedBancos] = useState([]);
   const cinemaSeats = {};
 
-  const maxForms = 3;
+  const maxForms = 4;
   const formsArray = Array.from({ length: maxForms }, (_, index) => `form${index + 1}`);
   const [currentForm, setCurrentForm] = useState(formsArray[0]);
   const [currentProgress, setCurrentProgress] = useState(10);
@@ -41,6 +41,9 @@ function PaymentWindow({ openPaymentWindow, setOpenPaymentWindow, selectedMovie,
 
   const [sizeOptionActive, setSizeOptionActive] = useState(true);
   const [sizeSelection, setSizeSelection] = useState("");
+
+  const [form1Error, setForm1Error] = useState('');
+  const [barProductsSelected, setBarProductsSelected] = useState(false);
 
   //* LISTS
   const beneficiosNOSList = [
@@ -85,7 +88,7 @@ function PaymentWindow({ openPaymentWindow, setOpenPaymentWindow, selectedMovie,
     const totalBilhetes = selectedNumeroPessoas * bilhetePorPessoa;
     let additionalTotal = 0;
 
-    if(selectedValue){
+    if (selectedValue) {
       const priceValue = extractNumberFromString(selectedValue);
       additionalTotal = priceValue;
     } else {
@@ -160,6 +163,21 @@ function PaymentWindow({ openPaymentWindow, setOpenPaymentWindow, selectedMovie,
     }
     cinemaSeats[selectedCinema] = newSeatsMatrix;
 
+    // Bancos ocupados aleatoriamente
+    const maxOccupiedBancos = 5;
+    let occupiedBancosCount = 0;
+
+    while (occupiedBancosCount < maxOccupiedBancos) {
+      const randomRowIndex = Math.floor(Math.random() * verticalSeats);
+      const availableColumns = Array.from({ length: horizontalSeats }, (_, index) => index).filter(col => !unavailableColumns.includes(col));
+      const randomSeatIndex = availableColumns[Math.floor(Math.random() * availableColumns.length)];
+
+      if (newSeatsMatrix[randomRowIndex][randomSeatIndex] !== 'occupied') {
+        newSeatsMatrix[randomRowIndex][randomSeatIndex] = 'occupied';
+        occupiedBancosCount++;
+      }
+    }
+
     setSeatsMatrix(newSeatsMatrix);
   };
 
@@ -201,21 +219,45 @@ function PaymentWindow({ openPaymentWindow, setOpenPaymentWindow, selectedMovie,
   const handleBancoSelect = (rowIndex, seatIndex) => {
     // Verifica se o banco já está selecionado
     const isBancoSelected = selectedBancos.some((banco) => banco.rowIndex === rowIndex && banco.seatIndex === seatIndex);
+    const isBancoOccupied = seatsMatrix[rowIndex][seatIndex] === 'occupied';
 
-    if (isBancoSelected) {
-      // Se o banco já estiver selecionado, remove-o da seleção
-      const updatedBancos = selectedBancos.filter((banco) => !(banco.rowIndex === rowIndex && banco.seatIndex === seatIndex));
-      setSelectedBancos(updatedBancos);
-    } else {
-      // Verifica se atingiu o número máximo de bancos permitidos
-      if (selectedBancos.length < selectedNumeroPessoas) {
-        // Adiciona o banco à seleção
-        setSelectedBancos([...selectedBancos, { rowIndex, seatIndex }]);
+    if (!isBancoOccupied) {
+      if (isBancoSelected) {
+        // Se o banco já estiver selecionado, remove-o da seleção
+        const updatedBancos = selectedBancos.filter((banco) => !(banco.rowIndex === rowIndex && banco.seatIndex === seatIndex));
+        setSelectedBancos(updatedBancos);
+      } else {
+        // Verifica se atingiu o número máximo de bancos permitidos
+        if (selectedBancos.length < selectedNumeroPessoas) {
+          // Adiciona o banco à seleção
+          setSelectedBancos([...selectedBancos, { rowIndex, seatIndex }]);
+        }
       }
     }
   };
 
+  const validateForm1 = () => {
+    if (selectedBancos.length === 0) {
+      setForm1Error('Todos os bancos têm de ser preenchidos antes de avançar.');
+      return false;
+    }
+    setForm1Error('');
+    return true;
+  };
+
   const handleSwitchForm = (direction) => {
+    if (currentForm === 'form1' && !validateForm1()) {
+      return;
+    }
+
+    if (currentForm === 'form3' && !barProductsSelected) {
+      const confirmMessage = "Você não selecionou nenhum produto de bar. Tem certeza de que deseja avançar?";
+      // Cancela a mudança de formulário se o user optar por não avançar
+      if (!window.confirm(confirmMessage)) {
+        return;
+      }
+    }
+
     setCurrentForm((prevForm) => {
       const formIndex = formsArray.indexOf(prevForm);
 
@@ -241,12 +283,13 @@ function PaymentWindow({ openPaymentWindow, setOpenPaymentWindow, selectedMovie,
 
   const handleMenuSelection = (e) => {
     document.querySelectorAll('.menu').forEach(menu => menu.classList.remove("active"));
-    if(e.currentTarget){
+    if (e.currentTarget) {
       e.currentTarget.closest('.menu').classList.add("active")
       e.currentTarget.querySelector("#price")?.classList.add("active");
     } else {
       e.closest('.menu').classList.add("active");
     }
+    setBarProductsSelected(e.currentTarget.closest('.menu-bar-list') !== null || e.currentTarget.closest('.menu-indiv-options') !== null);
     e.target ? calculateTotal(e.target.value) : calculateTotal();
   }
 
@@ -262,7 +305,7 @@ function PaymentWindow({ openPaymentWindow, setOpenPaymentWindow, selectedMovie,
   }
 
   const extractNumberFromString = (str) => {
-    if(str){
+    if (str) {
       const cleanStr = str.replace('(', '').replace(')', '').replace('€', '').replace(',', '.');
       // Converte a string para número
       const number = parseFloat(cleanStr.replace(/[^0-9.]/g, ''));
@@ -359,7 +402,7 @@ function PaymentWindow({ openPaymentWindow, setOpenPaymentWindow, selectedMovie,
                   <div className="progress-bar-fill" style={{ width: `${currentProgress}%` }}></div>
                 </div>
               </div>
-              <form>
+              <div>
                 <div id='form1' style={{ display: currentForm === 'form1' ? 'block' : 'none' }}>
                   <div id='numero-pessoas'>
                     <h3>Quantas pessoas?</h3>
@@ -447,11 +490,11 @@ function PaymentWindow({ openPaymentWindow, setOpenPaymentWindow, selectedMovie,
                                   <span id='m'
                                     className={`icon ${sizeSelection === 'm' ? 'active' : ''}`}
                                     onClick={() => handleSizeSelection('m')}>
-                                    <img className='icon' id='im' src={pipocasIcon} /><label>M <span  className={sizeSelection === 'm' ? 'active' : ''} id='price'>(€6,50)</span></label></span>
+                                    <img className='icon' id='im' src={pipocasIcon} /><label>M <span className={sizeSelection === 'm' ? 'active' : ''} id='price'>(€6,50)</span></label></span>
                                   <span id='l'
                                     className={`icon ${sizeSelection === 'l' ? 'active' : ''}`}
                                     onClick={() => handleSizeSelection('l')}>
-                                    <img className='icon' id='il' src={pipocasIcon} /><label>L <span  className={sizeSelection === 'l' ? 'active' : ''} id='price'>(€7,15)</span></label></span>
+                                    <img className='icon' id='il' src={pipocasIcon} /><label>L <span className={sizeSelection === 'l' ? 'active' : ''} id='price'>(€7,15)</span></label></span>
                                 </div>
                                 <div className='menu-details'>
                                   <div className='menu-img'>
@@ -601,11 +644,57 @@ function PaymentWindow({ openPaymentWindow, setOpenPaymentWindow, selectedMovie,
                     </div>
                   </div>
                 </div>
-              </form>
+                <div id='form4' style={{ display: currentForm === 'form4' ? 'block' : 'none' }}>
+                  <div id='form-data'>
+                    <h3>Podemos finalizar a compra?</h3>
+                    <hr />
+                    <div id='form-data-content'>
+                      <div className='form-fill'>
+                        <h4>Introduza os seus dados pessoais:</h4>
+                        <form>
+                          <input type='text' placeholder='Nome*'></input>
+                          <input type='tel' pattern="[0-9 ]{3} [0-9-]{3} [0-9-]{3} [0-9]{3}" maxlength="12" placeholder='Nº de Telemóvel*'></input>
+                          <input type='email' placeholder='email (onde irá receber os bilhetes)'></input>
+                          <input type='email' placeholder='Confirme o email'></input>
+
+                          <div>
+                            <input type='text' placeholder='Nome'></input>
+                            <input type='number' placeholder='Nº de Contribuinte*'></input>
+                            <input type='text' placeholder='Morada'></input>
+                            <input type='text' placeholder='Localidade'></input>
+                            <input type='text' pattern="^\s*?\d{5}(?:[-\s]\d{4})?\s*?$" placeholder='Código postal'></input>
+                            <p>A fatura será enviada para o e-mail</p>
+                          </div>
+                        </form>
+                      </div>
+                      <div className='form-info'>
+                        <p>
+                          Todos os campos assinalados com * são de preenchimento obrigatório. <br/>
+                          <br/>
+                          Não se efetuam trocas ou devoluções de bilhetes de cinema, nos termos legais em vigor de acordo com o art.17º, n.º1 k) do DL n.º24/2014, de 14 de Fevereiro. <br/><br/>
+
+                          O espetáculo inicia-se alguns minutos após o horário de sessão.<br/><br/>
+
+                          Para sessões 3D, no caso de não ter óculos 3D, terá de os comprar aquando do levantamento dos bilhetes.<br/><br/>
+
+                          Existe uma Taxa de Serviço associado ao Lugar Vip.<br/><br/>
+
+                          A compra de bilhetes com cartão NOS não abrange os suplementos das Salas Vip, upgrade 3D e óculos 3D. O levantamento da fatura é efetuado juntamente com os respetivos bilhetes.
+                        </p>
+                      </div>
+                    </div>
+                  </div>
+                </div>
+              </div>
 
               <div id='total-navigation'>
                 <h3>{`Total: € ${Number(total).toFixed(2)}`}</h3>
                 <div className='form-buttons'>
+                  {currentForm === 'form1' && (
+                    <div className='error-message-container'>
+                      {form1Error && <div className="error-message">{form1Error}</div>}
+                    </div>
+                  )}
                   <button onClick={() => handleSwitchForm('menos')}>Menos</button>
                   <button onClick={() => handleSwitchForm('mais')}>Mais</button>
                 </div>
