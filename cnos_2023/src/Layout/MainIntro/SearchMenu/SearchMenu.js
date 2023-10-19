@@ -1,17 +1,22 @@
 import React from 'react'
 import "./searchMenu.scss"
 
-function searchMenu() {
+function SearchMenu(setLinkValue) {
+  const handleSetLink = (e) => {
+    e.preventDefault();
+    setLinkValue.setLinkValue(e.currentTarget.textContent);
+  }
+
   return (
     <div className="menu-bar">
       <ul>
-        <li> Filmes </li>
-        <li> Cinemas </li>
-        <li> Bar </li>
-        <li> Outros Produtos </li>
+        <li onClick={handleSetLink}> Filmes </li>
+        <li onClick={handleSetLink}> Cinemas </li>
+        <li onClick={handleSetLink}> Bar </li>
+        <li onClick={handleSetLink}> Outros Produtos </li>
       </ul>
     </div>
   )
 }
 
-export default searchMenu
+export default SearchMenu

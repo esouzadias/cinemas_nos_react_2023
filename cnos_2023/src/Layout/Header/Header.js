@@ -7,18 +7,19 @@ import SearchMenu from '../MainIntro/SearchMenu/SearchMenu';
 import { FontAwesomeIcon } from '@fortawesome/react-fontawesome'
 import { faSearch } from '@fortawesome/free-solid-svg-icons'
 
-function Header({ allMovies, isAdult, movieTimes, /* cinemasList */ }) {
+<<<<<<< Updated upstream
+function Header() {
+=======
+function Header({ allMovies, setselectedMovie,  setOpenPaymentWindow, setLinkValue, setLink}) {
   const [ShowSearchResultsWindow, setShowSearchResultsWindow] = useState(false);
   const [numSearchResults, setNumSearchResults] = useState(0);
   const [movieResults, setMovieResults] = useState([]);
-  const [openPaymentWindow, setOpenPaymentWindow] = useState(false);
-  const [selectedMovie, setselectedMovie] = useState({});
   
   const handleSearchInput = (e) => {
     setShowSearchResultsWindow(true);
     const searchText = e.currentTarget.value.toUpperCase();
     
-    const filteredMovies = allMovies.filter(movie => movie.original_title.toUpperCase().includes(searchText));
+    const filteredMovies = allMovies?.filter(movie => movie.original_title.toUpperCase().includes(searchText));
     setMovieResults(filteredMovies);
     setNumSearchResults(filteredMovies.length);
 
@@ -37,6 +38,7 @@ function Header({ allMovies, isAdult, movieTimes, /* cinemasList */ }) {
     document.body.style.overflow = "hidden"; //Prevents scroll
   }
 
+>>>>>>> Stashed changes
   return (
   <>
     <div className="header-main">
@@ -56,10 +58,12 @@ function Header({ allMovies, isAdult, movieTimes, /* cinemasList */ }) {
           </div>
         </span>
       </div>
-      <SearchMenu />
+      <SearchMenu setLink={setLink} setLinkValue={setLinkValue}/>
     </div>
-      {openPaymentWindow && (<PaymentWindow setOpenPaymentWindow={setOpenPaymentWindow} isAdult={isAdult} movieTimes={movieTimes} openPaymentWindow={openPaymentWindow} selectedMovie={selectedMovie}/>)}  
+<<<<<<< Updated upstream
+=======
   </>
+>>>>>>> Stashed changes
   )
 }
 
