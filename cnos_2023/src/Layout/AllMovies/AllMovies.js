@@ -5,7 +5,7 @@ import './AllMovies.scss'
 import MoviePoster from '../MovieList/MoviePoster';
 import '../MovieList/MoviePoster.scss'
 
-function AllMovies({ movieGenres, allMovieData, upcomingMovieData, movieData, currentMovieIndex, movieTimes }) {
+function AllMovies({ movieGenres, allMovieData, upcomingMovieData, movieData, currentMovieIndex, movieTimes, setOpenPaymentWindow, setSelectedMovie }) {
   const [imaxMovies, setImaxMovies] = useState([]);
   const [inTheaterMovies, setInTheaterMovies] = useState([]);
   const [upcoming, setUpcoming] = useState([]);
@@ -109,7 +109,7 @@ function AllMovies({ movieGenres, allMovieData, upcomingMovieData, movieData, cu
       <div id='all-movies-list'>
         <ul>
           {moviesToShow?.map((movie, index) => (
-            <MoviePoster key={index} currentMovieIndex={currentMovieIndex} movie={movie} index={index} movieTimes={movieTimes} movieGenres={movieGenres} movieData={moviesToShow} />
+            <MoviePoster key={index} currentMovieIndex={currentMovieIndex} movie={movie} index={index} movieTimes={movieTimes} movieGenres={movieGenres} setSelectedMovie={setSelectedMovie} setOpenPaymentWindow={setOpenPaymentWindow} movieData={moviesToShow} />
           ))}
         </ul>
         <div id='show-more-button'>
