@@ -26,7 +26,7 @@ function Beneficio({ beneficio, total, setTotal, selectedNumeroPessoas }) {
   return (
     <div
       id='beneficio'
-      className={`${clickedBeneficio ? 'beneficio-active' : ''} ${beneficio.id === "bfam" && selectedNumeroPessoas === 1 ? 'beneficio-disabled' : ''}`}
+      className={`${clickedBeneficio ? 'beneficio-active' : ''} ${beneficio.id === "bfam" || beneficio.id === "cNOS" && selectedNumeroPessoas === 1 ? 'beneficio-disabled' : ''}`}
       onClick={handleClickBeneficio}
     >
       <div>

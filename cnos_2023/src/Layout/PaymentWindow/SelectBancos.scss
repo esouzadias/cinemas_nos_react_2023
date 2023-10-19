@@ -1,0 +1,61 @@
+@use "../../Assets/Styles/mixins.scss" as mix;
+@use "../../Assets/Styles/variables.scss" as var;
+
+.matrix {
+	display: flex;
+}
+
+.column {
+	display: flex;
+	flex-direction: column;
+	align-items: center;
+}
+
+.cell {
+	border: 1px solid #ddd;
+	max-width: 30px;
+	height: 30px;
+	display: flex;
+	align-items: center;
+	justify-content: center;
+}
+
+.letter {
+	font-size: 18px;
+}
+
+.banco {
+	width: 30px;
+	height: 30px;
+	background-color: #94959d;
+	margin: 2px;
+  text-align: center;
+
+	&:hover {
+		cursor: pointer;
+		background-color: var.$primaryColor;
+    color: black;
+	}
+	&#occupied {
+		background-color: #595c79;
+		background-image: url("../../Assets/Images/cross-icon.webp");
+		background-size: contain;
+		color: transparent;
+		&:hover {
+			cursor: default;
+		}
+	}
+  &.active {
+    background-color: var.$primaryColor;
+  }
+  &.unavailable {
+    background-color: #1b1b21;
+		color: transparent;
+		cursor: default;
+    &:hover {
+      cursor: default;
+      background-color: transparent;
+    }
+  }
+}
+

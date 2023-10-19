@@ -29,6 +29,7 @@ import gc_festasAniv from './Assets/Images/cinemasnos_festasaniversario.png';
 import gc_operasBailados from './Assets/Images/operas-a-bailados.jpg';
 import gc_banner_gaming from './Assets/Images/banner_gaming.jpg';
 import cinemasSalas from './Assets/Images/cinemas_nos_sala_de_cinema.jpeg';
+import PaymentWindow from './Layout/PaymentWindow/PaymentWindow';
 
 function App() {
   const [movieData, setMovieData] = useState(null);
@@ -43,6 +44,9 @@ function App() {
   const [nowPlaying, setNowPlaying] = useState(true);
   const adultGenres = ["Horror", "Thriller", "Drama"];
   const [isAdult, setIsAdult] = useState(false);
+  const [openPaymentWindow, setOpenPaymentWindow] = useState(false);
+  const [selectedMovie, setselectedMovie] = useState({});
+  const [linkValue, setLinkValue] = useState("");
 
   // LISTA DE INFORMAÇÕES
   const GiftCardList = [
@@ -142,43 +146,12 @@ function App() {
     }
   };
 
+  const setLink = () => {
+    window.location.href = linkValue;
+  };
+
   // ALTERNAR ENTRE FILMES EM CARTAZ E BREVEMENTE
   const handleMovieTypeClick = () => setNowPlaying(!nowPlaying);
-
-  // ATRIBUI OS VALORES DOS FILMES E GENRES PARA OS ESTADOS PARA SEREM PASSADOS PARA OS OUTROS COMPONENTES
-  // CORRE APENAS QUANDO CURRENTMOVIEINDEX, MOVIEDATA, UPCOMINGMOVIEDATA E MOVIEGENRES EXISTEM.
-  useEffect(() => {
-    if (movieData && movieData[currentMovieIndex]) {
-      const currentMovieGenreIds = movieData[currentMovieIndex]?.genre_ids || [];
-      const currentMovieGenreNames = currentMovieGenreIds.map((genreId) => {
-        const genre = movieGenres?.find((genre) => genre.id === genreId);
-        return genre ? genre.name : "";
-      }).join(", ");
-
-      setCurrentMovieGenre(currentMovieGenreNames);
-    } else if (upcomingMovieData && upcomingMovieData[currentMovieIndex]) {
-      const currentMovieGenreIds = upcomingMovieData[currentMovieIndex]?.genre_ids || [];
-      const currentMovieGenreNames = currentMovieGenreIds.map((genreId) => {
-        const genre = movieGenres?.find((genre) => genre.id === genreId);
-        return genre ? genre.name : "";
-      }).join(", ");
-      setCurrentMovieGenre(currentMovieGenreNames);
-    }
-  }, [currentMovieIndex, movieData, upcomingMovieData, movieGenres]);
-
-  // CORRE QUANDO O COMPONENTE CARREGA.
-  useEffect(() => {
-    fetchMoviesAndGenres(cinemasList);
-    // Configurar um intervalo para alterar o filme exibido a cada x segundos
-    const intervalId = setInterval(() => {
-      setCurrentMovieIndex((prevIndex) => (prevIndex + 1) % 6); // Alternar entre os 6 filmes
-    }, intervalTime);
-
-    return () => {
-      // Limpar o intervalo quando o componente é desmontado
-      clearInterval(intervalId);
-    };
-  }, []);
 
   // VALIDA TODOS OS FILMES E ATRIBUI O BOOLEANO TRUE OU FALSE SE O FILME FOR ADULTO
   const validateIsAdult = useMemo(() => {
@@ -228,17 +201,72 @@ function App() {
     return selectedCinemasInfo;
   };
 
+  // ATRIBUI OS VALORES DOS FILMES E GENRES PARA OS ESTADOS PARA SEREM PASSADOS PARA OS OUTROS COMPONENTES
+  // CORRE APENAS QUANDO CURRENTMOVIEINDEX, MOVIEDATA, UPCOMINGMOVIEDATA E MOVIEGENRES EXISTEM.
+  useEffect(() => {
+    if (movieData && movieData[currentMovieIndex]) {
+      const currentMovieGenreIds = movieData[currentMovieIndex]?.genre_ids || [];
+      const currentMovieGenreNames = currentMovieGenreIds.map((genreId) => {
+        const genre = movieGenres?.find((genre) => genre.id === genreId);
+        return genre ? genre.name : "";
+      }).join(", ");
+
+      setCurrentMovieGenre(currentMovieGenreNames);
+    } else if (upcomingMovieData && upcomingMovieData[currentMovieIndex]) {
+      const currentMovieGenreIds = upcomingMovieData[currentMovieIndex]?.genre_ids || [];
+      const currentMovieGenreNames = currentMovieGenreIds.map((genreId) => {
+        const genre = movieGenres?.find((genre) => genre.id === genreId);
+        return genre ? genre.name : "";
+      }).join(", ");
+      setCurrentMovieGenre(currentMovieGenreNames);
+    }
+  }, [currentMovieIndex, movieData, upcomingMovieData, movieGenres]);
+
+  // CORRE QUANDO O COMPONENTE CARREGA.
+  useEffect(() => {
+    fetchMoviesAndGenres(cinemasList);
+    // Configurar um intervalo para alterar o filme exibido a cada x segundos
+    const intervalId = setInterval(() => {
+      setCurrentMovieIndex((prevIndex) => (prevIndex + 1) % 6); // Alternar entre os 6 filmes
+    }, intervalTime);
+
+    return () => {
+      // Limpar o intervalo quando o componente é desmontado
+      clearInterval(intervalId);
+    };
+  }, []);
+
+  useEffect(() => {
+  if (linkValue) {
+    setLink();
+  }
+  }, [linkValue]);
+
   return (
     <div className="App">
-      <Header /* cinemasList={cinemasList} */ movieTimes={movieTimes} isAdult={isAdult} adultGenres={adultGenres} allMovies={allMovieData} />
+      <Header setLink={setLink} setLinkValue={setLinkValue} movieTimes={movieTimes} 
+        isAdult={isAdult} 
+        adultGenres={adultGenres} 
+        allMovies={allMovieData} 
+        setselectedMovie={setselectedMovie}  
+        selectedMovie={selectedMovie} 
+        setOpenPaymentWindow={setOpenPaymentWindow} 
+        openPaymentWindow={openPaymentWindow}
+      />
+
       {movieData && currentMovieGenre && movieTimes.length > 0 && (
         <>
+          {openPaymentWindow && (
+            <PaymentWindow setOpenPaymentWindow={setOpenPaymentWindow} isAdult={isAdult} movieTimes={movieTimes} openPaymentWindow={openPaymentWindow} selectedMovie={selectedMovie} setselectedMovie={setselectedMovie} />
+          )}
           <MainIntro
             mainMovie={movieData ? movieData : null}
             currentMovieIndex={currentMovieIndex}
             currentMovieGenre={currentMovieGenre}
             movieTime={movieTimes[currentMovieIndex]}
             isAdult={isAdult}
+            setOpenPaymentWindow={setOpenPaymentWindow}
+            setSelectedMovie={setselectedMovie}
           />
 
           <div className='movies-category'>
@@ -265,6 +293,8 @@ function App() {
               movieTimes={movieTimes}
               adultGenres={adultGenres}
               isAdult={isAdult}
+              setOpenPaymentWindow={setOpenPaymentWindow}
+              setSelectedMovie={setselectedMovie}
             />
           ) : (
             <MovieList
@@ -275,12 +305,22 @@ function App() {
               movieTimes={movieTimes}
               adultGenres={adultGenres}
               isAdult={isAdult}
+              setOpenPaymentWindow={setOpenPaymentWindow}
+              setSelectedMovie={setselectedMovie}
             />
           )}
         </>
       )}
-      <Cinemas cinemasList={cinemasList} />
-      <AllMovies currentMovieIndex={currentMovieIndex} movieTimes={movieTimes} movieGenres={movieGenres} allMovieData={allMovieData} movieData={movieData} upcomingMovieData={upcomingMovieData} />
+      <Cinemas cinemasList={cinemasList} ><a href="#cinemas" aria-hidden="true"></a></Cinemas>
+      <AllMovies currentMovieIndex={currentMovieIndex} 
+        movieTimes={movieTimes} 
+        movieGenres={movieGenres} 
+        allMovieData={allMovieData} 
+        movieData={movieData} 
+        setSelectedMovie={setselectedMovie} 
+        setOpenPaymentWindow={setOpenPaymentWindow} 
+        upcomingMovieData={upcomingMovieData} 
+      />
       <Banner backgroundImage={vantagensBg} title={"Doces ou salgadas"} paragraph={"Pipocas, menus, bebidas e muito mais"} buttonText={"Comprar artigos de bar"} />
       <Banner backgroundImage={outrosProdBg} title={"Mais do que um cinema, um espaço de entretenimento para todos"} paragraph={"Descobre toda a oferta de produto disponível nos Cinemas NOS."} />
       <div id='gift-card-list'>
