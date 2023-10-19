@@ -8,8 +8,13 @@ import { faPlay } from '@fortawesome/free-solid-svg-icons'
 import { faClose } from '@fortawesome/free-solid-svg-icons'
 import { fetchMovieTrailersData } from '../../Services/Utils/ApiRequests.js';
 
-function MainIntro({ mainMovie, currentMovieIndex, currentMovieGenre, movieTime, isAdult }) {
+<<<<<<< Updated upstream
+function MainIntro({ mainMovie, currentMovieIndex, currentMovieGenre, movieTime }) {
+  const [backgroundImage, setBackgroundImage] = useState(mainMovie && (`url(https://image.tmdb.org/t/p/w500${mainMovie[currentMovieIndex].poster_path})`));
+=======
+function MainIntro({ mainMovie, currentMovieIndex, currentMovieGenre, movieTime, isAdult, setOpenPaymentWindow, setSelectedMovie }) {
   const [backgroundImage, setBackgroundImage] = useState(mainMovie && (`url(https://image.tmdb.org/t/p/w500${mainMovie[currentMovieIndex]?.backdrop_path})`));
+>>>>>>> Stashed changes
   const [trailerPlaying, setTrailerPlaying] = useState(false);
   const [currentMovie, setCurrentMovie] = useState(mainMovie ? mainMovie[0] : null);
   const [movieTrailersData, setMovieTrailersData] = useState(null);
@@ -36,7 +41,15 @@ function MainIntro({ mainMovie, currentMovieIndex, currentMovieGenre, movieTime,
     e.currentTarget.parentElement.style.paddingTop = "50px";
   }
 
+<<<<<<< Updated upstream
+=======
+  const handlePaymentSelect = () => {
+    setOpenPaymentWindow(true);
+    setSelectedMovie(mainMovie[currentMovieIndex]);
+  }
+
   // recolhe os trailes de todos os filmes
+>>>>>>> Stashed changes
   const fetchTrailers = async () => {
     try {
       const movieTrailersResponse = await fetchMovieTrailersData(currentMovie.id);
@@ -73,7 +86,11 @@ function MainIntro({ mainMovie, currentMovieIndex, currentMovieGenre, movieTime,
       {trailerPlaying && (<FontAwesomeIcon id='closeBtn' onClick={handleCloseClick.bind(this)} icon={faClose} />)}
       <div id='main-intro-content'>
         {!trailerPlaying ? (
-          <div onClick={handleTrailerClick} id={'video-player'} style={{ backgroundImage: backgroundImage, /* backgroundSize: 'cover' */ }}>
+<<<<<<< Updated upstream
+          <div onClick={handleTrailerClick} id={'video-player'} style={{ backgroundImage: backgroundImage, backgroundSize: 'cover' }}>
+=======
+          <div onClick={handleTrailerClick} id={'video-player'} style={{ backgroundImage: backgroundImage}}>
+>>>>>>> Stashed changes
             <FontAwesomeIcon className='icon' icon={faPlay} />
           </div>
         ) : (
@@ -88,8 +105,13 @@ function MainIntro({ mainMovie, currentMovieIndex, currentMovieGenre, movieTime,
               <h2>{mainMovie[currentMovieIndex]?.original_title}</h2>
               <span>{mainMovie[currentMovieIndex]?.overview}</span>
               <div>
-                Língua: {mainMovie[currentMovieIndex]?.original_language}
+<<<<<<< Updated upstream
+                Língua: {mainMovie[currentMovieIndex].original_language}
                 <button>Comprar Bilhete</button>
+=======
+                Língua: {mainMovie[currentMovieIndex]?.original_language}
+                <button onClick={handlePaymentSelect}>Comprar Bilhete</button>
+>>>>>>> Stashed changes
               </div>
             </div>
           </div>
