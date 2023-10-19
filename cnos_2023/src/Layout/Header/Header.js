@@ -7,9 +7,6 @@ import SearchMenu from '../MainIntro/SearchMenu/SearchMenu';
 import { FontAwesomeIcon } from '@fortawesome/react-fontawesome'
 import { faSearch } from '@fortawesome/free-solid-svg-icons'
 
-<<<<<<< Updated upstream
-function Header() {
-=======
 function Header({ allMovies, setselectedMovie,  setOpenPaymentWindow, setLinkValue, setLink}) {
   const [ShowSearchResultsWindow, setShowSearchResultsWindow] = useState(false);
   const [numSearchResults, setNumSearchResults] = useState(0);
@@ -38,7 +35,6 @@ function Header({ allMovies, setselectedMovie,  setOpenPaymentWindow, setLinkVal
     document.body.style.overflow = "hidden"; //Prevents scroll
   }
 
->>>>>>> Stashed changes
   return (
   <>
     <div className="header-main">
@@ -60,10 +56,7 @@ function Header({ allMovies, setselectedMovie,  setOpenPaymentWindow, setLinkVal
       </div>
       <SearchMenu setLink={setLink} setLinkValue={setLinkValue}/>
     </div>
-<<<<<<< Updated upstream
-=======
   </>
->>>>>>> Stashed changes
   )
 }
 
