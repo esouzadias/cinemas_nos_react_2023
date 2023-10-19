@@ -90,7 +90,16 @@ body {
 		padding: 0 90px;
 		max-width: 85%;
 	}
+	#payment-window-overflow{
+		position: relative;
+		height: 100%;
+		width: 100%;
+		background-color: #1b1b21;
+		margin: 0 auto;
+		overflow: hidden;
+	}
 }
+
 
 @media (min-width: 168px) and (max-width: 550px) {
 	.header-main {
