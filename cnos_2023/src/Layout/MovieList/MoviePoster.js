@@ -3,10 +3,11 @@ import './MoviePoster.scss'
 import { FontAwesomeIcon } from '@fortawesome/react-fontawesome'
 import { faTicket } from '@fortawesome/free-solid-svg-icons'
 
-function MoviePoster({ movie, index, movieGenres, movieTimes, movieData, currentMovieIndex, adultGenres, isAdult }) {
+function MoviePoster({ movie, index, movieGenres, movieTimes, movieData, currentMovieIndex, adultGenres, isAdult, setOpenPaymentWindow, setSelectedMovie }) {
   
   const handleMovieClick = () => {
-
+    setOpenPaymentWindow(true);
+    setSelectedMovie(movie);
   }
 
   const getMovieGenres = (movieIndex) => {
